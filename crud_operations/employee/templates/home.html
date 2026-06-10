@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Employees</title>
+    <style>
+        table { border-collapse: collapse; width: 60%; margin: 20px auto; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #4CAF50; color: white; }
+        a { display: block; text-align: center; margin-top: 20px; }
+        button { padding: 8px 16px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center">Employees</h2>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Employee ID</th>
+                    <th>Employee Name</th>
+                    <th>Department</th>
+                    <th>Update</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in employees %}
+                <tr>
+                    <td>{{ x.id }}</td>
+                    <td>{{ x.emp_id }}</td>
+                    <td>{{ x.emp_name }}</td>
+                    <td>{{ x.emp_dept }}</td>
+                    <td><a href="{% url 'update_emp' x.id %}">Update</a></td>
+                    <td><a href="{% url 'delete' x.id %}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'create' %}"><button>Add Employee</button></a>
+    </div>
+</body>
+</html>

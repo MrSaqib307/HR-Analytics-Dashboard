@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Update Employee</title>
+    <style>
+        .form-container { width: 40%; margin: 50px auto; }
+        input { width: 100%; padding: 8px; margin: 10px 0; box-sizing: border-box; }
+        button { padding: 8px 16px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Update Employee</h2>
+        <form action="{% url 'update_emp' employee.id %}" method="post">
+            {% csrf_token %}
+            <label>Emp ID</label>
+            <input type="text" name="emp_id" value="{{ employee.emp_id }}" required>
+            <label>Emp Name</label>
+            <input type="text" name="emp_name" value="{{ employee.emp_name }}" required>
+            <label>Emp Dept</label>
+            <input type="text" name="emp_dept" value="{{ employee.emp_dept }}" required>
+            <button type="submit">Update</button>
+        </form>
+    </div>
+</body>
+</html>
