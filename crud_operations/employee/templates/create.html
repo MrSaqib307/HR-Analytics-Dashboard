@@ -2,27 +2,40 @@
 <html lang="en">
 <head>
     <title>Add Employee</title>
-    <style>
-        .form-container { width: 40%; margin: 50px auto; }
-        input { width: 100%; padding: 8px; margin: 10px 0; box-sizing: border-box; }
-        button { padding: 8px 16px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="form-container">
-        <h2>Add Employee</h2>
-        <form action="{% url 'create_emp' %}" method="post">
-            {% csrf_token %}
-            <label>Emp ID</label>
-            <input type="number" name="emp_id" placeholder="ID" required>
-            <label>Emp Name</label>
-            <input type="text" name="emp_name" placeholder="Name" required>
-            <label>Emp Dept</label>
-            <input type="text" name="emp_dept" placeholder="Department" required>
-            <label>Emp Salary</label>
-            <input type="number" name="emp_salary" placeholder="Salary" required>
-            <button type="submit">Add</button>
-        </form>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow" style="max-width: 500px; margin: auto;">
+            <div class="card-header bg-success text-white">
+                <h4>Add Employee</h4>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'create_emp' %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Employee ID</label>
+                        <input type="number" name="emp_id" class="form-control" placeholder="Enter ID" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Employee Name</label>
+                        <input type="text" name="emp_name" class="form-control" placeholder="Enter Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Department</label>
+                        <input type="text" name="emp_dept" class="form-control" placeholder="Enter Department" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Salary</label>
+                        <input type="number" name="emp_salary" class="form-control" placeholder="Enter Salary" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Add Employee</button>
+                </form>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+        </div>
     </div>
 </body>
 </html>
