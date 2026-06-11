@@ -18,7 +18,7 @@ INSTALLED_APPS = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'employee' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

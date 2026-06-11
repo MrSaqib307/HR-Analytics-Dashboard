@@ -115,3 +115,6 @@ def export_csv(request):
     for emp in employees:
         writer.writerow([emp.id, emp.emp_id, emp.emp_name, emp.emp_dept, emp.emp_salary, emp.emp_email, emp.emp_phone, emp.date_joined])
     return response
+def employee_detail(request, id):
+    employee = get_object_or_404(Employee, id=id)
+    return render(request, "detail.html", {"employee": employee})
