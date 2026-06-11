@@ -11,14 +11,16 @@
 <body>
     <div class="form-container">
         <h2>Add Employee</h2>
-        <form id="contactForm" action="{% url 'create_emp' %}" method="post">
+        <form action="{% url 'create_emp' %}" method="post">
             {% csrf_token %}
             <label>Emp ID</label>
-            <input type="text" name="emp_id" placeholder="ID" required>
+            <input type="number" name="emp_id" placeholder="ID" required>
             <label>Emp Name</label>
             <input type="text" name="emp_name" placeholder="Name" required>
             <label>Emp Dept</label>
-            <input type="text" name="emp_dept" placeholder="Dept" required>
+            <input type="text" name="emp_dept" placeholder="Department" required>
+            <label>Emp Salary</label>
+            <input type="number" name="emp_salary" placeholder="Salary" required>
             <button type="submit">Add</button>
         </form>
     </div>

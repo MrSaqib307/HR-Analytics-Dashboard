@@ -3,7 +3,7 @@
 <head>
     <title>Employees</title>
     <style>
-        table { border-collapse: collapse; width: 60%; margin: 20px auto; }
+        table { border-collapse: collapse; width: 70%; margin: 20px auto; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
         th { background-color: #4CAF50; color: white; }
         a { display: block; text-align: center; margin-top: 20px; }
@@ -20,6 +20,7 @@
                     <th>Employee ID</th>
                     <th>Employee Name</th>
                     <th>Department</th>
+                    <th>Salary</th>
                     <th>Update</th>
                     <th>Delete</th>
                 </tr>
@@ -31,6 +32,7 @@
                     <td>{{ x.emp_id }}</td>
                     <td>{{ x.emp_name }}</td>
                     <td>{{ x.emp_dept }}</td>
+                    <td>{{ x.emp_salary }}</td>
                     <td><a href="{% url 'update_emp' x.id %}">Update</a></td>
                     <td><a href="{% url 'delete' x.id %}">Delete</a></td>
                 </tr>

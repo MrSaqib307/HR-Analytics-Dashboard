@@ -13,8 +13,9 @@ def create_emp(request):
         emp_id = request.POST.get('emp_id')
         emp_name = request.POST.get('emp_name')
         emp_dept = request.POST.get('emp_dept')
+        emp_salary = request.POST.get('emp_salary')
         if emp_id and emp_name and emp_dept:
-            Employee.objects.create(emp_id=emp_id, emp_name=emp_name, emp_dept=emp_dept)
+            Employee.objects.create(emp_id=emp_id, emp_name=emp_name, emp_dept=emp_dept, emp_salary=emp_salary)
             return redirect('/')
     return render(request, "create.html")
 
@@ -28,6 +29,7 @@ def update_emp(request, id):
         employee.emp_id = request.POST.get("emp_id", employee.emp_id)
         employee.emp_name = request.POST.get("emp_name", employee.emp_name)
         employee.emp_dept = request.POST.get("emp_dept", employee.emp_dept)
+        employee.emp_salary = request.POST.get("emp_salary", employee.emp_salary)
         employee.save()
         return redirect("/")
     return render(request, "update.html", {"employee": employee})
