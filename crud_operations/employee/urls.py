@@ -10,6 +10,8 @@ urlpatterns = [
     path('delete/<int:id>/', views.delete, name="delete"),
     path('dashboard/', views.dashboard, name="dashboard"),
     path('login/', views.login_view, name="login"),
-    path('logout/', views.logout_view, name="logout"),                      
+    path('logout/', views.logout_view, name="logout"),
     path('export-csv/', views.export_csv, name="export_csv"),
-path('detail/<int:id>/', views.employee_detail, name="detail"),]
+    path('detail/<int:id>/', views.employee_detail, name="detail"),
+    path('employee-of-month/<int:id>/', views.toggle_employee_of_month, name="employee_of_month"),
+]

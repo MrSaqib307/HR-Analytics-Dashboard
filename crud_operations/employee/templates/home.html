@@ -8,6 +8,7 @@
             nav, form, .btn, .pagination, .d-flex { display: none !important; }
             table { width: 100%; }
         }
+        .employee-of-month { background-color: #fff3cd !important; }
     </style>
 </head>
 <body class="bg-light">
@@ -72,6 +73,7 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Date Joined</th>
+                <th>🏆</th>
                 <th>View</th>
                 <th>Update</th>
                 <th>Delete</th>
@@ -79,7 +81,7 @@
         </thead>
         <tbody>
             {% for x in page_obj %}
-            <tr>
+            <tr {% if x.is_employee_of_month %}class="employee-of-month"{% endif %}>
                 <td>
                     {% if x.photo %}
                         <img src="{{ x.photo.url }}" width="40" height="40" style="border-radius: 50%;">
@@ -89,12 +91,22 @@
                 </td>
                 <td>{{ x.id }}</td>
                 <td>{{ x.emp_id }}</td>
-                <td>{{ x.emp_name }}</td>
+                <td>
+                    {{ x.emp_name }}
+                    {% if x.is_employee_of_month %}🏆{% endif %}
+                </td>
                 <td>{{ x.emp_dept }}</td>
                 <td>{{ x.emp_salary }}</td>
                 <td>{{ x.emp_email }}</td>
                 <td>{{ x.emp_phone }}</td>
                 <td>{{ x.date_joined }}</td>
+                <td>
+                    {% if not x.is_employee_of_month %}
+                        <a href="{% url 'employee_of_month' x.id %}" class="btn btn-warning btn-sm">⭐ Set</a>
+                    {% else %}
+                        🏆
+                    {% endif %}
+                </td>
                 <td><a href="{% url 'detail' x.id %}" class="btn btn-info btn-sm">View</a></td>
                 <td><a href="{% url 'update_emp' x.id %}" class="btn btn-warning btn-sm">Update</a></td>
                 <td><a href="{% url 'delete' x.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete {{ x.emp_name }}?')">Delete</a></td>

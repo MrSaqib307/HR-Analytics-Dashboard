@@ -118,3 +118,12 @@ def export_csv(request):
 def employee_detail(request, id):
     employee = get_object_or_404(Employee, id=id)
     return render(request, "detail.html", {"employee": employee})
+def toggle_employee_of_month(request, id):
+    employee = get_object_or_404(Employee, id=id)
+    # Remove from all others first
+    Employee.objects.all().update(is_employee_of_month=False)
+    # Set this one
+    employee.is_employee_of_month = True
+    employee.save()
+    messages.success(request, f"{employee.emp_name} is now Employee of the Month! 🏆")
+    return redirect('/')

@@ -9,3 +9,4 @@ class Employee(models.Model):
     emp_phone = models.CharField(max_length=15, blank=True, default='')
     date_joined = models.DateField(auto_now_add=True)
     photo = models.ImageField(upload_to='photos/', blank=True, null=True)
+    is_employee_of_month = models.BooleanField(default=False)
