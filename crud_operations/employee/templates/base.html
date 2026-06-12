@@ -9,61 +9,51 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * { font-family: 'Poppins', sans-serif; }
-        body { background: #f0f2f5; }
+        body { background: #f5f6fa; }
 
         /* Sidebar */
         .sidebar {
-            width: 260px;
-            min-width: 260px;
+            width: 240px;
+            min-width: 240px;
             min-height: 100vh;
-            background: linear-gradient(160deg, #0f4c2a 0%, #1a7a42 60%, #28a745 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+            background: linear-gradient(180deg, #1a5c38 0%, #28a745 100%);
             position: fixed;
             top: 0;
             left: 0;
             z-index: 100;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
         }
         .sidebar-brand {
-            padding: 25px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 10px;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            margin-bottom: 15px;
         }
-        .sidebar-brand h5 { color: white; font-weight: 700; font-size: 1.1rem; margin: 0; }
-        .sidebar-brand p { color: rgba(255,255,255,0.6); font-size: 0.75rem; margin: 0; }
+        .sidebar-brand h5 { color: white; font-weight: 700; margin: 8px 0 2px 0; font-size: 1rem; }
+        .sidebar-brand p { color: rgba(255,255,255,0.6); font-size: 0.72rem; margin: 0; }
         .sidebar-menu a {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.85);
             text-decoration: none;
             display: flex;
             align-items: center;
-            padding: 12px 20px;
-            margin: 3px 10px;
-            border-radius: 10px;
-            transition: all 0.3s;
-            font-size: 0.9rem;
+            padding: 10px 18px;
+            margin: 2px 8px;
+            border-radius: 8px;
+            transition: all 0.25s;
+            font-size: 0.875rem;
             font-weight: 500;
         }
-        .sidebar-menu a:hover {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            transform: translateX(5px);
-        }
-        .sidebar-menu a.active {
-            background: rgba(255,255,255,0.25);
-            color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .sidebar-menu a i { width: 20px; margin-right: 10px; }
-        .sidebar-divider {
-            border-color: rgba(255,255,255,0.15);
-            margin: 10px 20px;
-        }
+        .sidebar-menu a:hover { background: rgba(255,255,255,0.18); color: white; }
+        .sidebar-menu a.active { background: rgba(255,255,255,0.25); color: white; }
+        .sidebar-menu a i { width: 22px; margin-right: 8px; font-size: 0.9rem; }
+        .sidebar-divider { border-color: rgba(255,255,255,0.15); margin: 8px 18px; }
 
-        /* Main Content */
-        .main-wrapper { margin-left: 260px; }
+        /* Main */
+        .main-wrapper { margin-left: 240px; min-height: 100vh; }
         .topbar {
             background: white;
-            padding: 15px 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 14px 28px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.07);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -71,91 +61,85 @@
             top: 0;
             z-index: 99;
         }
-        .topbar h4 { font-weight: 700; color: #1a7a42; margin: 0; }
-        .main-content { padding: 25px 30px; }
+        .topbar h4 { font-weight: 700; color: #1a5c38; margin: 0; font-size: 1.15rem; }
+        .main-content { padding: 24px 28px; }
 
         /* Cards */
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
-        }
-        .card-header {
-            border-radius: 15px 15px 0 0 !important;
-            font-weight: 600;
-            padding: 15px 20px;
-        }
-
-        /* Buttons */
-        .btn { border-radius: 8px; font-weight: 500; font-size: 0.85rem; }
-        .btn-success { background: linear-gradient(135deg, #1a7a42, #28a745); border: none; }
-        .btn-success:hover { background: linear-gradient(135deg, #155c33, #1e8035); }
+        .card { border: none; border-radius: 12px; box-shadow: 0 1px 8px rgba(0,0,0,0.07); background: white; }
+        .card-header { border-radius: 12px 12px 0 0 !important; padding: 14px 20px; font-weight: 600; }
 
         /* Table */
-        .table { font-size: 0.88rem; }
-        .table thead th { font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border: none; padding: 12px 15px; }
-        .table tbody td { padding: 12px 15px; vertical-align: middle; border-color: #f0f2f5; }
-        .table tbody tr:hover { background: #f8fff9; }
-
-        /* Stat Cards */
-        .stat-card {
-            border-radius: 15px;
-            padding: 20px;
+        .table-card { border-radius: 12px; overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.07); }
+        .table { margin: 0; font-size: 0.875rem; }
+        .table thead th {
+            background: #1a5c38;
             color: white;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 13px 16px;
+            border: none;
         }
-        .stat-card .icon { font-size: 2.5rem; opacity: 0.8; }
-        .stat-card h2 { font-size: 2rem; font-weight: 700; margin: 0; }
-        .stat-card p { margin: 0; opacity: 0.8; font-size: 0.85rem; }
+        .table tbody td { padding: 12px 16px; vertical-align: middle; border-color: #f0f0f0; color: #444; }
+        .table tbody tr:hover { background: #f0fff4; }
+        .table tbody tr:nth-child(even) { background: #fafafa; }
+        .table tbody tr:nth-child(even):hover { background: #f0fff4; }
+
+        /* Buttons */
+        .btn { border-radius: 7px; font-weight: 500; font-size: 0.83rem; }
+        .btn-success { background: #1a5c38; border-color: #1a5c38; }
+        .btn-success:hover { background: #154a2d; border-color: #154a2d; }
 
         /* Page Header */
         .page-header {
             background: white;
-            border-radius: 15px;
-            padding: 20px 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.07);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .page-header h5 { font-weight: 700; margin: 0; color: #1a3a2a; }
-        .page-header p { margin: 0; color: #6c757d; font-size: 0.85rem; }
+        .page-header h5 { font-weight: 700; margin: 0; color: #1a3a2a; font-size: 1rem; }
+        .page-header p { margin: 0; color: #888; font-size: 0.8rem; }
 
         /* Badges */
-        .badge { font-weight: 500; padding: 5px 10px; border-radius: 6px; }
+        .badge { font-weight: 500; padding: 4px 9px; border-radius: 6px; font-size: 0.75rem; }
 
-        /* Alerts */
-        .alert { border-radius: 12px; border: none; }
-        .alert-success { background: #d4edda; color: #155724; }
+        /* Alert */
+        .alert { border-radius: 10px; border: none; font-size: 0.875rem; }
+
+        /* Avatar */
+        .avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.85rem; color: white;
+            background: linear-gradient(135deg, #1a5c38, #28a745);
+        }
 
         /* Dark Mode */
-        body.dark-mode { background: #1a1a2e; color: #e0e0e0; }
-        body.dark-mode .topbar { background: #16213e; }
-        body.dark-mode .card { background: #16213e; color: #e0e0e0; }
-        body.dark-mode .table { color: #e0e0e0; }
-        body.dark-mode .table tbody td { border-color: #0f3460; }
-        body.dark-mode .table tbody tr:hover { background: #0f3460; }
-        body.dark-mode .page-header { background: #16213e; }
-        body.dark-mode .main-content { background: #1a1a2e; }
+        body.dark-mode { background: #121212; color: #e0e0e0; }
+        body.dark-mode .topbar, body.dark-mode .card, body.dark-mode .page-header { background: #1e1e1e; color: #e0e0e0; }
+        body.dark-mode .table tbody td { color: #ccc; border-color: #2a2a2a; }
+        body.dark-mode .table tbody tr:nth-child(even) { background: #1a1a1a; }
+        body.dark-mode .table tbody tr:hover { background: #2a2a2a; }
 
         @media print {
             .sidebar, .topbar, .btn, .pagination, form { display: none !important; }
             .main-wrapper { margin-left: 0; }
-            table { width: 100%; }
         }
-
         {% block extra_css %}{% endblock %}
     </style>
 </head>
 <body>
 <div class="d-flex">
-    <!-- Sidebar -->
     <div class="sidebar">
-        <div class="sidebar-brand text-center">
-            <i class="fas fa-users-cog fa-2x text-white mb-2"></i>
+        <div class="sidebar-brand">
+            <i class="fas fa-users-cog fa-2x text-white"></i>
             <h5>Employee Manager</h5>
-            <p>Management System</p>
+            <p>HR Management System</p>
         </div>
         <div class="sidebar-menu">
             <a href="/" class="{% block nav_home %}{% endblock %}"><i class="fas fa-home"></i>Home</a>
@@ -169,28 +153,24 @@
         </div>
     </div>
 
-    <!-- Main Wrapper -->
     <div class="main-wrapper flex-grow-1">
-        <!-- Top Bar -->
         <div class="topbar">
-            <h4>{% block page_title %}{% endblock %}</h4>
+            <h4><i class="fas fa-circle text-success me-2" style="font-size:0.6rem;"></i>{% block page_title %}{% endblock %}</h4>
             <div class="d-flex gap-2">
-                <button onclick="toggleDarkMode()" class="btn btn-outline-secondary btn-sm"><i class="fas fa-moon me-1"></i>Dark Mode</button>
+                <button onclick="toggleDarkMode()" class="btn btn-outline-secondary btn-sm"><i class="fas fa-moon me-1"></i>Dark</button>
                 <button onclick="window.print()" class="btn btn-outline-secondary btn-sm"><i class="fas fa-print me-1"></i>Print</button>
             </div>
         </div>
 
-        <!-- Content -->
         <div class="main-content">
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show">
                         <i class="fas fa-check-circle me-2"></i>{{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
             {% endif %}
-
             {% block content %}{% endblock %}
         </div>
     </div>
