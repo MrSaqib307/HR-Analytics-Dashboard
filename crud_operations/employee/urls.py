@@ -14,4 +14,7 @@ urlpatterns = [
     path('export-csv/', views.export_csv, name="export_csv"),
     path('detail/<int:id>/', views.employee_detail, name="detail"),
     path('employee-of-month/<int:id>/', views.toggle_employee_of_month, name="employee_of_month"),
+    path('departments/', views.department_list, name="departments"),
+    path('departments/create/', views.department_create, name="department_create"),
+    path('departments/delete/<int:id>/', views.department_delete, name="department_delete"),
 ]

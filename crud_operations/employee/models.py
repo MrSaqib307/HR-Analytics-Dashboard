@@ -1,5 +1,13 @@
 from django.db import models
 
+class Department(models.Model):
+    dept_name = models.CharField(max_length=50)
+    dept_head = models.CharField(max_length=50, blank=True, default='')
+    dept_description = models.TextField(blank=True, default='')
+
+    def __str__(self):
+        return self.dept_name
+
 class Employee(models.Model):
     emp_id = models.IntegerField()
     emp_name = models.CharField(max_length=50)

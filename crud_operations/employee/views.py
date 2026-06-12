@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Employee
+from .models import Employee, Department
 
 @login_required(login_url='/login/')
 def home(request):
@@ -127,3 +127,25 @@ def toggle_employee_of_month(request, id):
     employee.save()
     messages.success(request, f"{employee.emp_name} is now Employee of the Month! 🏆")
     return redirect('/')
+from .models import Employee, Department
+
+def department_list(request):
+    departments = Department.objects.all()
+    return render(request, "departments.html", {'departments': departments})
+
+def department_create(request):
+    if request.method == "POST":
+        dept_name = request.POST.get('dept_name')
+        dept_head = request.POST.get('dept_head')
+        dept_description = request.POST.get('dept_description')
+        if dept_name:
+            Department.objects.create(dept_name=dept_name, dept_head=dept_head, dept_description=dept_description)
+            messages.success(request, "Department added successfully!")
+            return redirect('/departments/')
+    return render(request, "department_create.html")
+
+def department_delete(request, id):
+    dept = get_object_or_404(Department, id=id)
+    dept.delete()
+    messages.success(request, "Department deleted successfully!")
+    return redirect('/departments/')
