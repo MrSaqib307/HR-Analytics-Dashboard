@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Payroll{% endblock %}
+{% block page_title %}💰 Payroll System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h5 class="fw-bold mb-1">Payroll Management</h5>
+        <p>Manage employee salaries, bonuses and deductions</p>
+    </div>
+    <a href="/payroll/create/" class="btn btn-success"><i class="fas fa-plus me-2"></i>Create Payroll</a>
+</div>
+
+<div class="table-card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Basic Salary</th>
+                <th>Bonus</th>
+                <th>Deductions</th>
+                <th>Net Salary</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in payrolls %}
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        {% if p.employee.photo %}
+                            <img src="{{ p.employee.photo.url }}" width="32" height="32" style="border-radius:50%; object-fit:cover;">
+                        {% else %}
+                            <div class="avatar">{{ p.employee.emp_name|first }}</div>
+                        {% endif %}
+                        <strong>{{ p.employee.emp_name }}</strong>
+                    </div>
+                </td>
+                <td>{{ p.month }}</td>
+                <td>{{ p.year }}</td>
+                <td>{{ p.basic_salary }}</td>
+                <td><span class="badge bg-success">+{{ p.bonus }}</span></td>
+                <td><span class="badge bg-danger">-{{ p.total_deduction }}</span></td>
+                <td><strong class="text-success">{{ p.net_salary }}</strong></td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/payroll/detail/{{ p.id }}/"><i class="fas fa-eye me-2 text-info"></i>View Slip</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="/payroll/delete/{{ p.id }}/" onclick="return confirm('Delete this payroll?')"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Salary Slip{% endblock %}
+{% block page_title %}🧾 Salary Slip{% endblock %}
+
+{% block extra_css %}
+@media print {
+    .sidebar, .topbar, .btn, .no-print { display: none !important; }
+    .main-wrapper { margin-left: 0 !important; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-header no-print">
+    <div>
+        <h5 class="fw-bold mb-1">Salary Slip</h5>
+        <p>{{ payroll.employee.emp_name }} - {{ payroll.month }} {{ payroll.year }}</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button onclick="window.print()" class="btn btn-success"><i class="fas fa-print me-2"></i>Print Slip</button>
+        <a href="/payroll/" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back</a>
+    </div>
+</div>
+
+<div class="card" style="max-width: 700px; margin: auto;">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #1a5c38, #28a745); padding: 25px; border-radius: 12px 12px 0 0; text-align: center; color: white;">
+        <i class="fas fa-users-cog fa-2x mb-2"></i>
+        <h4 class="fw-bold mb-0">Employee Manager</h4>
+        <p class="mb-0" style="opacity: 0.8; font-size: 0.85rem;">HR Management System</p>
+        <hr style="border-color: rgba(255,255,255,0.3);">
+        <h5 class="fw-bold mb-0">SALARY SLIP</h5>
+        <p class="mb-0">{{ payroll.month }} {{ payroll.year }}</p>
+    </div>
+
+    <div class="card-body p-4">
+        <!-- Employee Info -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center gap-3">
+                    {% if payroll.employee.photo %}
+                        <img src="{{ payroll.employee.photo.url }}" width="60" height="60" style="border-radius: 50%; object-fit: cover;">
+                    {% else %}
+                        <div class="avatar" style="width:60px; height:60px; font-size:1.5rem;">{{ payroll.employee.emp_name|first }}</div>
+                    {% endif %}
+                    <div>
+                        <h5 class="fw-bold mb-0">{{ payroll.employee.emp_name }}</h5>
+                        <p class="text-muted mb-0">{{ payroll.employee.emp_dept }}</p>
+                        <p class="text-muted mb-0" style="font-size:0.8rem;">ID: {{ payroll.employee.emp_id }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <p class="mb-1"><strong>Email:</strong> {{ payroll.employee.emp_email }}</p>
+                <p class="mb-1"><strong>Phone:</strong> {{ payroll.employee.emp_phone }}</p>
+                <p class="mb-0"><strong>Date Joined:</strong> {{ payroll.employee.date_joined }}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Salary Details -->
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="fw-bold text-success mb-3">💵 Earnings</h6>
+                <table class="table table-sm">
+                    <tr>
+                        <td>Basic Salary</td>
+                        <td class="text-end fw-bold">Rs. {{ payroll.basic_salary }}</td>
+                    </tr>
+                    <tr>
+                        <td>Bonus</td>
+                        <td class="text-end fw-bold text-success">Rs. {{ payroll.bonus }}</td>
+                    </tr>
+                    <tr style="background: #f0fff4;">
+                        <td><strong>Total Earnings</strong></td>
+                        <td class="text-end fw-bold text-success">Rs. {{ payroll.basic_salary|add:payroll.bonus }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h6 class="fw-bold text-danger mb-3">📉 Deductions</h6>
+                <table class="table table-sm">
+                    <tr>
+                        <td>Leaves Taken</td>
+                        <td class="text-end">{{ payroll.leaves_taken }} days</td>
+                    </tr>
+                    <tr>
+                        <td>Leave Deduction/Day</td>
+                        <td class="text-end">Rs. {{ payroll.leave_deduction_per_day }}</td>
+                    </tr>
+                    <tr>
+                        <td>Late Deduction</td>
+                        <td class="text-end">Rs. {{ payroll.late_deduction }}</td>
+                    </tr>
+                    <tr style="background: #fff5f5;">
+                        <td><strong>Total Deductions</strong></td>
+                        <td class="text-end fw-bold text-danger">Rs. {{ payroll.total_deduction }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Net Salary -->
+        <div style="background: linear-gradient(135deg, #1a5c38, #28a745); border-radius: 10px; padding: 20px; text-align: center; color: white;">
+            <p class="mb-1" style="opacity: 0.8;">Net Salary</p>
+            <h2 class="fw-bold mb-0">Rs. {{ payroll.net_salary }}</h2>
+        </div>
+
+        {% if payroll.notes %}
+        <div class="mt-3 p-3" style="background: #f8f9fa; border-radius: 8px;">
+            <strong>Notes:</strong> {{ payroll.notes }}
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-4 text-muted" style="font-size: 0.8rem;">
+            <p>Generated on {{ payroll.created_at|date:"d M Y" }} | Employee Manager HR System</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

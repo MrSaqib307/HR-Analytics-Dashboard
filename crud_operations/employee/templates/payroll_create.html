@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Payroll{% endblock %}
+{% block page_title %}💰 Create Payroll{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<style>
+.select2-container--default .select2-selection--single {
+    height: 42px;
+    border-radius: 7px;
+    border: 1px solid #ced4da;
+    padding: 6px 10px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 42px;
+}
+.employee-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+}
+.employee-option img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.employee-option .avatar-small {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a5c38, #28a745);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+.employee-option .info strong { font-size: 0.9rem; display: block; }
+.employee-option .info span { font-size: 0.75rem; color: #888; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h5 class="fw-bold mb-1">Create Payroll</h5>
+        <p>Add salary, bonus and deductions for employee</p>
+    </div>
+    <a href="/payroll/" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back</a>
+</div>
+
+<div class="card p-4" style="max-width: 700px;">
+    <form action="/payroll/create/" method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="form-label fw-bold">Employee</label>
+                <select name="employee" id="employeeSelect" class="form-select" required style="width:100%">
+                    <option value="">Search employee by name or ID...</option>
+                    {% for emp in employees %}
+                    <option value="{{ emp.id }}"
+                        data-salary="{{ emp.emp_salary }}"
+                        data-dept="{{ emp.emp_dept }}"
+                        data-empid="{{ emp.emp_id }}"
+                        data-photo="{% if emp.photo %}{{ emp.photo.url }}{% endif %}"
+                        data-name="{{ emp.emp_name }}">
+                        {{ emp.emp_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Month</label>
+                <select name="month" class="form-select" required>
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Year</label>
+                <input type="number" name="year" class="form-control" value="2026" required>
+            </div>
+
+            <div class="col-12"><hr><h6 class="fw-bold text-success">💵 Salary Details</h6></div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Basic Salary</label>
+                <div class="input-group">
+                    <span class="input-group-text">Rs.</span>
+                    <input type="number" name="basic_salary" id="basicSalary" class="form-control" placeholder="Auto from employee" required onchange="calculateBonus()">
+                </div>
+                <small class="text-muted">Auto-filled from employee record</small>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Salary Increase %</label>
+                <div class="input-group">
+                    <input type="number" name="salary_increase_percent" id="salaryIncrease" class="form-control" placeholder="0" value="0" onchange="calculateBonus()">
+                    <span class="input-group-text">%</span>
+                </div>
+                <small class="text-muted" id="increaseAmount">Increase: Rs. 0</small>
+            </div>
+
+            <div class="col-12"><hr><h6 class="fw-bold text-warning">🎁 Bonus</h6></div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Bonus Type</label>
+                <select name="bonus_type" id="bonusType" class="form-select" onchange="calculateBonus()">
+                    <option value="amount">Fixed Amount</option>
+                    <option value="percentage">Percentage %</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Bonus Value</label>
+                <div class="input-group">
+                    <input type="number" name="bonus_value" id="bonusValue" class="form-control" placeholder="0" value="0" onchange="calculateBonus()">
+                    <span class="input-group-text" id="bonusSymbol">Rs.</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Bonus Amount</label>
+                <div class="input-group">
+                    <span class="input-group-text">Rs.</span>
+                    <input type="text" id="bonusAmount" class="form-control bg-light" readonly placeholder="0">
+                </div>
+            </div>
+
+            <div class="col-12"><hr><h6 class="fw-bold text-danger">📉 Deductions</h6></div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Leave Deduction/Day</label>
+                <div class="input-group">
+                    <span class="input-group-text">Rs.</span>
+                    <input type="number" name="leave_deduction_per_day" id="leaveDeductionPerDay" class="form-control" placeholder="0" value="0" onchange="calculateTotal()">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Leaves Taken</label>
+                <input type="number" name="leaves_taken" id="leavesTaken" class="form-control" placeholder="0" value="0" onchange="calculateTotal()">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Late Deduction</label>
+                <div class="input-group">
+                    <span class="input-group-text">Rs.</span>
+                    <input type="number" name="late_deduction" id="lateDeduction" class="form-control" placeholder="0" value="0" onchange="calculateTotal()">
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="col-12 mt-2">
+                <div style="background: #f8f9fa; border-radius: 10px; padding: 15px;">
+                    <h6 class="fw-bold mb-3">📊 Salary Summary</h6>
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <p class="text-muted mb-1" style="font-size:0.8rem;">Basic + Increase</p>
+                            <h5 class="fw-bold text-success" id="summaryBasic">Rs. 0</h5>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <p class="text-muted mb-1" style="font-size:0.8rem;">Bonus</p>
+                            <h5 class="fw-bold text-warning" id="summaryBonus">Rs. 0</h5>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <p class="text-muted mb-1" style="font-size:0.8rem;">Deductions</p>
+                            <h5 class="fw-bold text-danger" id="summaryDeduction">Rs. 0</h5>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <p class="text-muted mb-1" style="font-size:0.8rem;">Net Salary</p>
+                            <h5 class="fw-bold text-primary" id="summaryNet">Rs. 0</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12"><hr><h6 class="fw-bold">📝 Notes</h6></div>
+            <div class="col-12">
+                <textarea name="notes" class="form-control" rows="3" placeholder="Any additional notes..."></textarea>
+            </div>
+
+            <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-success w-100 py-2"><i class="fas fa-save me-2"></i>Generate Payroll</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+function formatEmployee(employee) {
+    if (!employee.id) return employee.text;
+    const option = $(employee.element);
+    const photo = option.data('photo');
+    const empId = option.data('empid');
+    const dept = option.data('dept');
+    const name = option.data('name');
+    let avatar = '';
+    if (photo) {
+        avatar = `<img src="${photo}">`;
+    } else {
+        avatar = `<div class="avatar-small">${name.charAt(0)}</div>`;
+    }
+    return $(`
+        <div class="employee-option">
+            ${avatar}
+            <div class="info">
+                <strong>${name}</strong>
+                <span>ID: ${empId} | ${dept}</span>
+            </div>
+        </div>
+    `);
+}
+
+$(document).ready(function() {
+    $('#employeeSelect').select2({
+        templateResult: formatEmployee,
+        templateSelection: formatEmployee,
+        placeholder: 'Search employee by name or ID...',
+        allowClear: true,
+    });
+
+    $('#employeeSelect').on('change', function() {
+        const selected = $(this).find(':selected');
+        const salary = selected.data('salary') || 0;
+        document.getElementById('basicSalary').value = salary;
+        calculateBonus();
+    });
+});
+
+function calculateBonus() {
+    const basic = parseFloat(document.getElementById('basicSalary').value) || 0;
+    const bonusType = document.getElementById('bonusType').value;
+    const bonusValue = parseFloat(document.getElementById('bonusValue').value) || 0;
+    const increasePercent = parseFloat(document.getElementById('salaryIncrease').value) || 0;
+    const increaseAmount = (basic * increasePercent) / 100;
+    const newBasic = basic + increaseAmount;
+    document.getElementById('increaseAmount').innerText = `Increase: Rs. ${increaseAmount.toFixed(0)}`;
+    let bonus = 0;
+    if (bonusType === 'percentage') {
+        bonus = (newBasic * bonusValue) / 100;
+        document.getElementById('bonusSymbol').innerText = '%';
+    } else {
+        bonus = bonusValue;
+        document.getElementById('bonusSymbol').innerText = 'Rs.';
+    }
+    document.getElementById('bonusAmount').value = bonus.toFixed(0);
+    calculateTotal(newBasic, bonus);
+}
+
+function calculateTotal(newBasic, bonus) {
+    if (newBasic === undefined) {
+        const basic = parseFloat(document.getElementById('basicSalary').value) || 0;
+        const increasePercent = parseFloat(document.getElementById('salaryIncrease').value) || 0;
+        newBasic = basic + (basic * increasePercent / 100);
+        bonus = parseFloat(document.getElementById('bonusAmount').value) || 0;
+    }
+    const leavePerDay = parseFloat(document.getElementById('leaveDeductionPerDay').value) || 0;
+    const leavesTaken = parseFloat(document.getElementById('leavesTaken').value) || 0;
+    const lateDeduction = parseFloat(document.getElementById('lateDeduction').value) || 0;
+    const totalDeduction = (leavePerDay * leavesTaken) + lateDeduction;
+    const netSalary = newBasic + bonus - totalDeduction;
+    document.getElementById('summaryBasic').innerText = `Rs. ${newBasic.toFixed(0)}`;
+    document.getElementById('summaryBonus').innerText = `Rs. ${bonus.toFixed(0)}`;
+    document.getElementById('summaryDeduction').innerText = `Rs. ${totalDeduction.toFixed(0)}`;
+    document.getElementById('summaryNet').innerText = `Rs. ${netSalary.toFixed(0)}`;
+}
+</script>
+{% endblock %}
