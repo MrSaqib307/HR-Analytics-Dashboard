@@ -1,108 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="bg-light">
-<nav class="navbar navbar-expand-lg navbar-dark bg-success">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="/">👔 Employee Manager</a>
-        <div class="d-flex">
-            <a href="/" class="btn btn-outline-light me-2">Home</a>
-            <a href="/dashboard/" class="btn btn-outline-light me-2">Dashboard</a>
-            <a href="{% url 'create' %}" class="btn btn-light me-2">Add Employee</a>
-            <a href="/logout/" class="btn btn-outline-light">Logout</a>
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}📊 Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<!-- Stat Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card p-3 text-center" style="border-left: 4px solid #1a5c38;">
+            <h6 class="text-muted">Total Employees</h6>
+            <h2 class="fw-bold text-success">{{ total_employees }}</h2>
         </div>
     </div>
-</nav>
-
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Dashboard</h2>
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-4">
-            <div class="card text-white bg-success shadow mb-4">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Total Employees</h5>
-                    <h1>{{ total_employees }}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-primary shadow mb-4">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Total Departments</h5>
-                    <h1>{{ total_departments }}</h1>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-warning shadow mb-4">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Total Salary</h5>
-                    <h1>{{ total_salary }}</h1>
-                </div>
-            </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center" style="border-left: 4px solid #007bff;">
+            <h6 class="text-muted">Total Departments</h6>
+            <h2 class="fw-bold text-primary">{{ total_departments }}</h2>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5>Employees by Department</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="deptChart"></canvas>
-                </div>
-            </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center" style="border-left: 4px solid #ffc107;">
+            <h6 class="text-muted">Total Salary</h6>
+            <h2 class="fw-bold text-warning">{{ total_salary }}</h2>
         </div>
-        <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5>Salary by Department</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="salaryChart"></canvas>
-                </div>
-            </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center" style="border-left: 4px solid #dc3545;">
+            <h6 class="text-muted">Avg Salary</h6>
+            <h2 class="fw-bold text-danger">{{ avg_salary }}</h2>
         </div>
     </div>
 </div>
 
+<!-- Row 1: Pie + Bar -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6 class="fw-bold mb-3">🥧 Employees by Department</h6>
+            <canvas id="deptChart" height="250"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6 class="fw-bold mb-3">📊 Salary by Department</h6>
+            <canvas id="salaryChart" height="250"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Row 2: Line + Histogram -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6 class="fw-bold mb-3">📈 Employees Joined Per Month</h6>
+            <canvas id="lineChart" height="250"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h6 class="fw-bold mb-3">📉 Salary Distribution (Histogram)</h6>
+            <canvas id="histChart" height="250"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Row 3: Scatter -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card p-3">
+            <h6 class="fw-bold mb-3">🔵 Salary vs Employee ID (Scatter Plot)</h6>
+            <canvas id="scatterChart" height="120"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const deptLabels = {{ dept_labels|safe }};
-    const deptCounts = {{ dept_counts|safe }};
-    const salaryCounts = {{ salary_data|safe }};
+const deptLabels = {{ dept_labels|safe }};
+const deptCounts = {{ dept_counts|safe }};
+const salaryData = {{ salary_data|safe }};
+const monthLabels = {{ month_labels|safe }};
+const monthCounts = {{ month_counts|safe }};
+const histLabels = {{ hist_labels|safe }};
+const histCounts = {{ hist_counts|safe }};
+const scatterData = {{ scatter_data|safe }};
 
-    new Chart(document.getElementById('deptChart'), {
-        type: 'pie',
-        data: {
-            labels: deptLabels,
-            datasets: [{
-                data: deptCounts,
-                backgroundColor: ['#28a745', '#007bff', '#ffc107', '#dc3545', '#17a2b8', '#6f42c1'],
-            }]
-        }
-    });
+const colors = ['#1a5c38','#007bff','#ffc107','#dc3545','#17a2b8','#6f42c1','#fd7e14','#20c997'];
 
-    new Chart(document.getElementById('salaryChart'), {
-        type: 'bar',
-        data: {
-            labels: deptLabels,
-            datasets: [{
-                label: 'Total Salary',
-                data: salaryCounts,
-                backgroundColor: '#007bff',
-            }]
-        },
-        options: {
-            scales: {
-                y: { beginAtZero: true }
-            }
+new Chart(document.getElementById('deptChart'), {
+    type: 'pie',
+    data: { labels: deptLabels, datasets: [{ data: deptCounts, backgroundColor: colors }] },
+    options: { plugins: { legend: { position: 'bottom' } } }
+});
+
+new Chart(document.getElementById('salaryChart'), {
+    type: 'bar',
+    data: { labels: deptLabels, datasets: [{ label: 'Total Salary', data: salaryData, backgroundColor: '#1a5c38' }] },
+    options: { scales: { y: { beginAtZero: true } } }
+});
+
+new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: {
+        labels: monthLabels,
+        datasets: [{ label: 'Employees Joined', data: monthCounts, borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.1)', tension: 0.4, fill: true }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+});
+
+new Chart(document.getElementById('histChart'), {
+    type: 'bar',
+    data: { labels: histLabels, datasets: [{ label: 'Employees', data: histCounts, backgroundColor: '#ffc107' }] },
+    options: { scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } }
+});
+
+new Chart(document.getElementById('scatterChart'), {
+    type: 'scatter',
+    data: {
+        datasets: [{ label: 'Employee Salary', data: scatterData, backgroundColor: '#dc3545', pointRadius: 6 }]
+    },
+    options: {
+        scales: {
+            x: { title: { display: true, text: 'Employee ID' } },
+            y: { title: { display: true, text: 'Salary (Rs.)' }, beginAtZero: false }
         }
-    });
+    }
+});
 </script>
-</body>
-</html>
+{% endblock %}

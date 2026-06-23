@@ -74,20 +74,51 @@ def delete(request, id):
     return redirect("/")
 
 def dashboard(request):
+    from datetime import datetime
+    
     total_employees = Employee.objects.count()
     total_salary = Employee.objects.aggregate(Sum('emp_salary'))['emp_salary__sum'] or 0
+    avg_salary = round(total_salary / total_employees) if total_employees > 0 else 0
     total_departments = Employee.objects.values('emp_dept').distinct().count()
+    
+    # Pie and Bar chart data
     dept_data = Employee.objects.values('emp_dept').annotate(count=Count('emp_dept'), total_salary=Sum('emp_salary'))
     dept_labels = [d['emp_dept'] for d in dept_data]
     dept_counts = [d['count'] for d in dept_data]
     salary_data = [float(d['total_salary']) for d in dept_data]
+
+    # Line chart - employees joined per month
+    months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    month_counts = []
+    for i in range(1, 13):
+        count = Employee.objects.filter(date_joined__month=i).count()
+        month_counts.append(count)
+
+    # Histogram - salary distribution
+    ranges = [(0,50000),(50000,75000),(75000,100000),(100000,125000),(125000,150000),(150000,999999)]
+    hist_labels = ['0-50k','50k-75k','75k-100k','100k-125k','125k-150k','150k+']
+    hist_counts = []
+    for r in ranges:
+        count = Employee.objects.filter(emp_salary__gte=r[0], emp_salary__lt=r[1]).count()
+        hist_counts.append(count)
+
+    # Scatter plot data
+    employees = Employee.objects.all()
+    scatter_data = [{'x': emp.emp_id, 'y': float(emp.emp_salary)} for emp in employees]
+
     return render(request, "dashboard.html", {
         'total_employees': total_employees,
         'total_salary': total_salary,
+        'avg_salary': avg_salary,
         'total_departments': total_departments,
         'dept_labels': dept_labels,
         'dept_counts': dept_counts,
         'salary_data': salary_data,
+        'month_labels': months,
+        'month_counts': month_counts,
+        'hist_labels': hist_labels,
+        'hist_counts': hist_counts,
+        'scatter_data': scatter_data,
     })
 
 def login_view(request):
