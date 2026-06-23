@@ -106,6 +106,39 @@ def dashboard(request):
     employees = Employee.objects.all()
     scatter_data = [{'x': emp.emp_id, 'y': float(emp.emp_salary)} for emp in employees]
 
+# Auto Insights
+    insights = []
+    
+    # Most common department
+    top_dept = Employee.objects.values('emp_dept').annotate(count=Count('emp_dept')).order_by('-count').first()
+    if top_dept:
+        insights.append(f"🏢 {top_dept['emp_dept']} has the most employees with {top_dept['count']} staff members.")
+    
+    # Highest salary department
+    high_sal_dept = Employee.objects.values('emp_dept').annotate(avg_sal=Sum('emp_salary')/Count('emp_dept')).order_by('-avg_sal').first()
+    if high_sal_dept:
+        insights.append(f"💰 {high_sal_dept['emp_dept']} has the highest average salary of Rs. {round(high_sal_dept['avg_sal']):,}.")
+    
+    # Lowest salary department
+    low_sal_dept = Employee.objects.values('emp_dept').annotate(avg_sal=Sum('emp_salary')/Count('emp_dept')).order_by('avg_sal').first()
+    if low_sal_dept:
+        insights.append(f"📉 {low_sal_dept['emp_dept']} has the lowest average salary of Rs. {round(low_sal_dept['avg_sal']):,}.")
+    
+    # Average salary
+    insights.append(f"📊 The average employee salary across all departments is Rs. {avg_salary:,}.")
+    
+    # Most recent hire
+    latest = Employee.objects.order_by('-date_joined').first()
+    if latest:
+        insights.append(f"🆕 Most recent hire is {latest.emp_name} from {latest.emp_dept} department.")
+    
+    # High earners
+    high_earners = Employee.objects.filter(emp_salary__gte=100000).count()
+    insights.append(f"⭐ {high_earners} employees earn Rs. 100,000 or more per month.")
+    
+    # Total payroll
+    insights.append(f"💵 Total monthly payroll expenditure is Rs. {int(total_salary):,}.")
+
     return render(request, "dashboard.html", {
         'total_employees': total_employees,
         'total_salary': total_salary,
@@ -119,6 +152,8 @@ def dashboard(request):
         'hist_labels': hist_labels,
         'hist_counts': hist_counts,
         'scatter_data': scatter_data,
+         'insights': insights,
+
     })
 
 def login_view(request):

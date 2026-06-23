@@ -74,6 +74,19 @@
         </div>
     </div>
 </div>
+<!-- Insights -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card p-3">
+            <h6 class="fw-bold mb-3">💡 Auto Generated Insights</h6>
+            {% for insight in insights %}
+            <div class="alert alert-success py-2 mb-2">
+                {{ insight }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
