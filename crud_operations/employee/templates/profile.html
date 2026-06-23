@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+{% block page_title %}👤 My Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <div class="avatar mx-auto mb-3" style="width:80px; height:80px; font-size:2rem;">
+                {{ user.username|first|upper }}
+            </div>
+            <h5 class="fw-bold">{{ user.username }}</h5>
+            <p class="text-muted">{{ user.email }}</p>
+            <span class="badge bg-success">
+                {% if user.is_superuser %}Admin{% else %}Staff{% endif %}
+            </span>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card p-4">
+            <h6 class="fw-bold mb-3">Account Information</h6>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Username</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th>First Name</th>
+                    <td>{{ user.first_name|default:"Not set" }}</td>
+                </tr>
+                <tr>
+                    <th>Last Name</th>
+                    <td>{{ user.last_name|default:"Not set" }}</td>
+                </tr>
+                <tr>
+                    <th>Date Joined</th>
+                    <td>{{ user.date_joined|date:"d M Y" }}</td>
+                </tr>
+                <tr>
+                    <th>Last Login</th>
+                    <td>{{ user.last_login|date:"d M Y H:i" }}</td>
+                </tr>
+                <tr>
+                    <th>Account Type</th>
+                    <td>
+                        {% if user.is_superuser %}
+                            <span class="badge bg-danger">Super Admin</span>
+                        {% else %}
+                            <span class="badge bg-success">Staff</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

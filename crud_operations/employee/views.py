@@ -74,71 +74,44 @@ def delete(request, id):
     return redirect("/")
 
 def dashboard(request):
-    from datetime import datetime
-    
     total_employees = Employee.objects.count()
     total_salary = Employee.objects.aggregate(Sum('emp_salary'))['emp_salary__sum'] or 0
     avg_salary = round(total_salary / total_employees) if total_employees > 0 else 0
     total_departments = Employee.objects.values('emp_dept').distinct().count()
-    
-    # Pie and Bar chart data
     dept_data = Employee.objects.values('emp_dept').annotate(count=Count('emp_dept'), total_salary=Sum('emp_salary'))
     dept_labels = [d['emp_dept'] for d in dept_data]
     dept_counts = [d['count'] for d in dept_data]
     salary_data = [float(d['total_salary']) for d in dept_data]
-
-    # Line chart - employees joined per month
     months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
     month_counts = []
     for i in range(1, 13):
         count = Employee.objects.filter(date_joined__month=i).count()
         month_counts.append(count)
-
-    # Histogram - salary distribution
     ranges = [(0,50000),(50000,75000),(75000,100000),(100000,125000),(125000,150000),(150000,999999)]
     hist_labels = ['0-50k','50k-75k','75k-100k','100k-125k','125k-150k','150k+']
     hist_counts = []
     for r in ranges:
         count = Employee.objects.filter(emp_salary__gte=r[0], emp_salary__lt=r[1]).count()
         hist_counts.append(count)
-
-    # Scatter plot data
     employees = Employee.objects.all()
     scatter_data = [{'x': emp.emp_id, 'y': float(emp.emp_salary)} for emp in employees]
-
-# Auto Insights
     insights = []
-    
-    # Most common department
     top_dept = Employee.objects.values('emp_dept').annotate(count=Count('emp_dept')).order_by('-count').first()
     if top_dept:
         insights.append(f"🏢 {top_dept['emp_dept']} has the most employees with {top_dept['count']} staff members.")
-    
-    # Highest salary department
     high_sal_dept = Employee.objects.values('emp_dept').annotate(avg_sal=Sum('emp_salary')/Count('emp_dept')).order_by('-avg_sal').first()
     if high_sal_dept:
         insights.append(f"💰 {high_sal_dept['emp_dept']} has the highest average salary of Rs. {round(high_sal_dept['avg_sal']):,}.")
-    
-    # Lowest salary department
     low_sal_dept = Employee.objects.values('emp_dept').annotate(avg_sal=Sum('emp_salary')/Count('emp_dept')).order_by('avg_sal').first()
     if low_sal_dept:
         insights.append(f"📉 {low_sal_dept['emp_dept']} has the lowest average salary of Rs. {round(low_sal_dept['avg_sal']):,}.")
-    
-    # Average salary
     insights.append(f"📊 The average employee salary across all departments is Rs. {avg_salary:,}.")
-    
-    # Most recent hire
     latest = Employee.objects.order_by('-date_joined').first()
     if latest:
         insights.append(f"🆕 Most recent hire is {latest.emp_name} from {latest.emp_dept} department.")
-    
-    # High earners
     high_earners = Employee.objects.filter(emp_salary__gte=100000).count()
     insights.append(f"⭐ {high_earners} employees earn Rs. 100,000 or more per month.")
-    
-    # Total payroll
     insights.append(f"💵 Total monthly payroll expenditure is Rs. {int(total_salary):,}.")
-
     return render(request, "dashboard.html", {
         'total_employees': total_employees,
         'total_salary': total_salary,
@@ -152,8 +125,7 @@ def dashboard(request):
         'hist_labels': hist_labels,
         'hist_counts': hist_counts,
         'scatter_data': scatter_data,
-         'insights': insights,
-
+        'insights': insights,
     })
 
 def login_view(request):
@@ -319,3 +291,32 @@ def payroll_delete(request, id):
     payroll.delete()
     messages.success(request, "Payroll deleted successfully!")
     return redirect('/payroll/')
+
+def profile(request):
+    if request.method == "POST":
+        user = request.user
+        user.first_name = request.POST.get('first_name', '')
+        user.last_name = request.POST.get('last_name', '')
+        user.email = request.POST.get('email', '')
+        user.save()
+        messages.success(request, "Profile updated successfully!")
+        return redirect('/profile/')
+    return render(request, "profile.html", {'user': request.user})
+
+def register(request):
+    from django.contrib.auth.models import User
+    if request.method == "POST":
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        if password1 == password2:
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Username already exists!")
+            else:
+                user = User.objects.create_user(username=username, email=email, password=password1)
+                messages.success(request, "Account created successfully! Please login.")
+                return redirect('/login/')
+        else:
+            messages.error(request, "Passwords do not match!")
+    return render(request, "register.html")
