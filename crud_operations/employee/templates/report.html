@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}HR Analytics Report{% endblock %}
+{% block page_title %}📄 HR Analytics Report{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <h5 class="fw-bold">Employee Report — {{ today }}</h5>
+    <button onclick="window.print()" class="btn btn-success">
+        <i class="fas fa-print me-2"></i>Print / Save as PDF
+    </button>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 text-center" style="border-left: 4px solid #1a5c38;">
+            <h6 class="text-muted">Total Employees</h6>
+            <h2 class="fw-bold text-success">{{ total_employees }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 text-center" style="border-left: 4px solid #007bff;">
+            <h6 class="text-muted">Total Salary</h6>
+            <h2 class="fw-bold text-primary">Rs. {{ total_salary }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 text-center" style="border-left: 4px solid #ffc107;">
+            <h6 class="text-muted">Average Salary</h6>
+            <h2 class="fw-bold text-warning">Rs. {{ avg_salary }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3 mb-4">
+    <h6 class="fw-bold mb-3">📊 Department Summary</h6>
+    <table class="table table-bordered table-striped">
+        <thead class="table-success">
+            <tr>
+                <th>Department</th>
+                <th>Total Employees</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dept in dept_data %}
+            <tr>
+                <td>{{ dept.emp_dept }}</td>
+                <td>{{ dept.count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card p-3">
+    <h6 class="fw-bold mb-3">👥 All Employees</h6>
+    <table class="table table-bordered table-striped table-sm">
+        <thead class="table-success">
+            <tr>
+                <th>#</th>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Salary</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Date Joined</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in employees %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ emp.emp_id }}</td>
+                <td>{{ emp.emp_name }}</td>
+                <td>{{ emp.emp_dept }}</td>
+                <td>Rs. {{ emp.emp_salary }}</td>
+                <td>{{ emp.emp_email }}</td>
+                <td>{{ emp.emp_phone }}</td>
+                <td>{{ emp.date_joined }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

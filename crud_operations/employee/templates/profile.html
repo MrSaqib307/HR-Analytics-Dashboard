@@ -19,43 +19,31 @@
     </div>
     <div class="col-md-8">
         <div class="card p-4">
-            <h6 class="fw-bold mb-3">Account Information</h6>
-            <table class="table table-bordered">
-                <tr>
-                    <th>Username</th>
-                    <td>{{ user.username }}</td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td>{{ user.email }}</td>
-                </tr>
-                <tr>
-                    <th>First Name</th>
-                    <td>{{ user.first_name|default:"Not set" }}</td>
-                </tr>
-                <tr>
-                    <th>Last Name</th>
-                    <td>{{ user.last_name|default:"Not set" }}</td>
-                </tr>
-                <tr>
-                    <th>Date Joined</th>
-                    <td>{{ user.date_joined|date:"d M Y" }}</td>
-                </tr>
-                <tr>
-                    <th>Last Login</th>
-                    <td>{{ user.last_login|date:"d M Y H:i" }}</td>
-                </tr>
-                <tr>
-                    <th>Account Type</th>
-                    <td>
-                        {% if user.is_superuser %}
-                            <span class="badge bg-danger">Super Admin</span>
-                        {% else %}
-                            <span class="badge bg-success">Staff</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            </table>
+            <h6 class="fw-bold mb-3">Edit Profile</h6>
+            <form action="/profile/" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">First Name</label>
+                    <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Last Name</label>
+                    <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ user.email }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Username</label>
+                    <input type="text" class="form-control" value="{{ user.username }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Date Joined</label>
+                    <input type="text" class="form-control" value="{{ user.date_joined|date:'d M Y' }}" disabled>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Save Changes</button>
+            </form>
         </div>
     </div>
 </div>

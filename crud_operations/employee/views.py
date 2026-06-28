@@ -320,3 +320,19 @@ def register(request):
         else:
             messages.error(request, "Passwords do not match!")
     return render(request, "register.html")
+def html_report(request):
+    from datetime import date
+    employees = Employee.objects.all()
+    today = date.today().strftime("%d %B %Y")
+    total_employees = Employee.objects.count()
+    total_salary = Employee.objects.aggregate(Sum('emp_salary'))['emp_salary__sum'] or 0
+    avg_salary = round(total_salary / total_employees) if total_employees > 0 else 0
+    dept_data = Employee.objects.values('emp_dept').annotate(count=Count('emp_dept'))
+    return render(request, "report.html", {
+        'employees': employees,
+        'total_employees': total_employees,
+        'total_salary': total_salary,
+        'avg_salary': avg_salary,
+        'dept_data': dept_data,
+        'today': today,
+    })
